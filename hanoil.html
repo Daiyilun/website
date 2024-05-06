@@ -1,0 +1,458 @@
+<html>
+	<head>
+		<title>
+			汉诺塔程序SVG图像处理
+		</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=gb2312"/>
+		<script>
+            var Obj=''
+            document.onmouseup=MUp
+            document.onmousemove=MMove
+            var moveFlag = false;
+            function MDown(){
+                if(moveFlag)
+                {
+                    moveFlag = false;
+                    Obj=event.srcElement.id;
+                    document.all(Obj).setCapture();
+                    pX=event.x-document.all(Obj).style.pixelLeft;
+                    pY=event.y-document.all(Obj).style.pixelTop;
+                }
+            }
+
+            function MMove(){
+            if(Obj!=''){
+	            document.all(Obj).style.left=event.x-pX;
+	            document.all(Obj).style.top=event.y-pY;
+	            }
+            }
+            /**/
+            function removeArray(objTitle)
+            {
+                 switch(objTitle)
+                 {
+                    case "1":arrayX.shift();break;
+                    case "2":arrayY.shift();break;
+                    case "3":arrayZ.shift();break;
+                 }
+            }
+            /*还原积木块*/
+            function gotoResource(obj)
+            {
+                switch(obj.title)
+                {
+                    case "1":obj.style.left=200-parseInt(obj.style.width)/2+5+'px';obj.style.top=500-arrayX.length*30;moveFlag = true;break;
+                    case "2":obj.style.left=500-parseInt(obj.style.width)/2+5+'px';obj.style.top=500-arrayY.length*30;moveFlag = true;break;
+                    case "3":obj.style.left=800-parseInt(obj.style.width)/2+5+'px';obj.style.top=500-arrayZ.length*30;moveFlag = true;break;
+                }
+            }
+            function checkDown(obj)
+            {
+                switch(obj.title)
+                {
+                    case "1":if(obj.id==arrayX[0].id)return;break;
+                    case "2":obj.style.left=500-parseInt(obj.style.width)/2+5+'px';obj.style.top=500-arrayY.length*30;moveFlag = true;break;
+                    case "3":obj.style.left=800-parseInt(obj.style.width)/2+5+'px';obj.style.top=500-arrayZ.length*30;moveFlag = true;break;
+                }
+            }
+            /*鼠标抬起事件*/
+            function MUp(){
+            if(Obj!=''){
+	            document.all(Obj).releaseCapture();
+	            var objE = document.all(Obj);
+	            
+	            if(parseInt(objE.style.left)<=200+5 && parseInt(objE.style.left)+parseInt(objE.style.width)>=200)
+	            {
+	                if(arrayX.length<1||parseInt(objE.style.width)<parseInt(arrayX[0].style.width))
+	                {
+	                    objE.style.left=200-parseInt(objE.style.width)/2+5+'px';
+    	                
+	                    var heightTo = 1;   
+	                    if(objE.title!="1")
+	                    {
+	                        arrayX.unshift(objE);         
+			                heightTo = arrayX.length;
+			                removeArray(objE.title);
+			                objE.title = "1";    			            
+	                    }
+	                    else
+	                    {
+	                        heightTo = arrayX.length;
+	                    }
+	                    gotoHanBottom1(objE,heightTo);
+	                }
+	                else
+	                {
+	                    gotoResource(objE);
+	                }
+	            }
+	            else if(parseInt(document.all(Obj).style.left)<=500+5 && parseInt(document.all(Obj).style.left)+parseInt(document.all(Obj).style.width)>=500)
+	            {
+	                if(arrayY.length<1||parseInt(objE.style.width)<parseInt(arrayY[0].style.width))
+	                {
+	                    objE.style.left=500-parseInt(objE.style.width)/2+5+'px';
+	                    var heightTo = 1;        
+	                    if(objE.title!="2")
+	                    {
+	                        arrayY.unshift(objE);         
+			                heightTo = arrayY.length;
+			                removeArray(objE.title);
+			                objE.title = "2";
+	                    }
+	                    else
+	                    {
+	                        heightTo = arrayY.length;
+	                    }
+	                    gotoHanBottom1(objE,heightTo);
+	                }
+	                else
+	                {
+	                    gotoResource(objE);
+	                }
+	            }
+	            else if(parseInt(document.all(Obj).style.left)<=800+5 && parseInt(document.all(Obj).style.left)+parseInt(document.all(Obj).style.width)>=800)
+	            {
+	                if(arrayZ.length<1||parseInt(objE.style.width)<parseInt(arrayZ[0].style.width))
+	                {
+	                objE.style.left=800-parseInt(objE.style.width)/2+5+'px';
+	                var heightTo = 1;     
+	                if(objE.title!="3")
+	                {
+	                    arrayZ.unshift(objE);         
+			            heightTo = arrayZ.length;
+			            removeArray(objE.title);
+			            objE.title = "3";
+	                }
+	                else
+	                {
+	                    heightTo = arrayZ.length;
+	                }
+	                gotoHanBottom1(objE,heightTo);
+	                }
+	                else
+	                {
+	                    gotoResource(objE);
+	                }
+	            }
+	            else
+	            {
+	                gotoResource(objE);
+	            }
+	            Obj='';
+	            }
+            }
+            /*向下移动*/
+			function gotoHanBottom1(obj,h)
+			{
+			    if(obj)
+			    {	
+			        if(h==0)
+			        {
+			            h=1;
+			        }
+			        if(parseInt(obj.style.top) != 500-h*30)
+			        {
+			            obj.style.top = parseInt(obj.style.top)+1+'px';
+			            timeoutFlag = setTimeout(function(){gotoHanBottom1(obj,h);},10);		
+			        }
+			        else
+			        {
+			            moveFlag = true;
+			        }
+			    }
+			}
+			function Xm()
+			{
+			    this.arrayFrom = new Array();
+			    this.arrayTo = new Array();
+			    this.insertItem = function(key,value)
+			    {
+			        this.arrayFrom[this.arrayFrom.length] = key;
+			        this.arrayTo[this.arrayTo.length] = value;
+			    }
+			    this.clearItem = function()
+			    {
+			        this.arrayFrom.length = 0;
+			        this.arrayTo.length = 0;
+			    }
+			}
+			var xm = new Xm();
+			var arrayX = new Array();
+			var arrayY = new Array();
+			var arrayZ = new Array();
+			var timeoutFlag;
+			/*显示输出*/
+			function display()
+			{
+			    var tempArray;
+			    var heightTo = 0;
+			    switch(xm.arrayFrom[0])
+			    {
+			        case 200:tempArray = arrayX.shift();break;
+			        case 500:tempArray = arrayY.shift();break;
+			        case 800:tempArray = arrayZ.shift();break;
+			    }
+			    switch(xm.arrayTo[0])
+			    {
+			        case 200:arrayX.unshift(tempArray);heightTo = arrayX.length;break;
+			        case 500:arrayY.unshift(tempArray);heightTo = arrayY.length;break;
+			        case 800:arrayZ.unshift(tempArray);heightTo = arrayZ.length;break;
+			    }			    
+			    gotoHanTop(tempArray,xm.arrayFrom[0],xm.arrayTo[0],heightTo);
+			}
+			function hanoi1(n,a,b,c)
+			{
+				if(n==1)
+				{
+					xm.insertItem(a,c);
+				}
+				else
+				{						
+				   	hanoi1(n-1,a,c,b);
+				   	xm.insertItem(a,c);
+	                hanoi1(n-1,b,a,c);
+				}
+			}
+			/*向下移动*/
+			function gotoHanBottom(obj,a,c,h)
+			{
+			    if(obj)
+			    {	
+			        if(parseInt(obj.style.top) == 500-h*30)
+			        {
+			            xm.arrayFrom.shift();
+			            xm.arrayTo.shift();
+			            if(xm.arrayFrom.length>0)
+			            {
+			                display();
+			            }
+			        }
+			        else
+			        {
+			            obj.style.top = parseInt(obj.style.top)+2+'px';
+			            timeoutFlag = setTimeout(function(){gotoHanBottom(obj,a,c,h);},10);		
+			        }
+			    }
+			}
+			/*横向移动*/
+			function gotoHanLeft(obj,a,c,h)
+			{
+			    if(obj)
+			    {	
+			        if(parseInt(obj.style.left) == c-parseInt(obj.style.width)/2+5)
+			        {
+			            gotoHanBottom(obj,a,c,h);
+			        }
+			        else
+			        {
+			            var k = 0;
+			            if(c>a)
+			            {
+			                k = 2;
+			            }
+			            else
+			            {
+			                k = -2;
+			            }
+			            obj.style.left = parseInt(obj.style.left)+k+'px';
+			            timeoutFlag = setTimeout(function(){gotoHanLeft(obj,a,c,h);},10);
+			        }
+			    }
+			}
+			/*向上移动*/
+			function gotoHanTop(obj,a,c,h)
+			{	
+			    if(obj)
+			    {		    
+			        if(obj.style.top == "100px")
+			        {
+			            gotoHanLeft(obj,a,c,h);			        
+			        }
+			        else
+			        {
+			            obj.style.top = parseInt(obj.style.top)-2+'px';
+			            timeoutFlag = setTimeout(function(){gotoHanTop(obj,a,c,h);},10);		
+			        }
+			    }	    
+			}
+			function runHand()
+			{
+			    if(document.getElementById("hanNum").value=="")
+				{
+					alert("请填入盘子数量！");
+					return false;
+				}
+				if(!isNumber(document.getElementById("hanNum").value))
+				{
+				    alert("请输入数字！");
+				    return false;
+				}
+				if(parseInt(document.getElementById("hanNum").value)>13 || parseInt(document.getElementById("hanNum").value)<1)
+				{
+				    alert("盘子数量请选择在1~13之间！");
+				    return false;
+				}
+			    clearTimeout(timeoutFlag);
+				var num = parseInt(""+document.getElementById("hanNum").value);
+				moveFlag = true;
+				arrayX = createPanel(num);					 
+			}
+			/*开始按钮事件*/
+			function runH()
+			{
+				if(document.getElementById("hanNum").value=="")
+				{
+					alert("请填入盘子数量！");
+					return false;
+				}
+				if(!isNumber(document.getElementById("hanNum").value))
+				{
+				    alert("请输入数字！");
+				    return false;
+				}
+				if(parseInt(document.getElementById("hanNum").value)>13 || parseInt(document.getElementById("hanNum").value)<1)
+				{
+				    alert("盘子数量请选择在1~13之间！");
+				    return false;
+				}
+			    clearTimeout(timeoutFlag);
+				var num = parseInt(""+document.getElementById("hanNum").value);
+				
+				arrayX = createPanel(num);					 
+				hanoi1(num,200,500,800);
+				display();					
+			}
+			/*数字校验*/
+			 function isNumber(oNum)
+             {
+                if(!oNum) return false;
+                oNum = ""+parseInt(oNum);
+                var strP=/^\d+(\.\d+)?$/;
+                if(!strP.test(oNum)) return false;
+                try{
+                if(parseFloat(oNum)!=oNum) return false;
+                }
+                catch(ex)
+                {
+                  return false;
+                }
+                return true;
+             } 
+            /*停止事件*/
+			function stopH()
+			{
+				clearTimeout(timeoutFlag);
+				clearPanel();
+			}
+		</script>	
+	</head>
+	<body style="background-color:#DFEFFF">
+		<div style="width:390px"><fieldset><legend>汉诺塔控制台</legend>
+			<div style="padding:5,5,5,5"><label for="hanNum">盘子数目:</label><input type="text" id="hanNum">
+			<input type="button" id="handstart" value="手动" onclick="runHand();"/>&nbsp;<input type="button" id="start" value="自动" onclick="runH();"/>&nbsp;<input type="button" id="end" value="停止" onclick="stopH();"/>
+			</div>
+			</fieldset></div>
+			<hr size="10" color="#aa55dd" style="width:100%;top:500px;position:absolute">
+			<img style="background-color:#aa55dd;width:10px;height:350px;top:150px;left:200px;position:absolute">
+			<img style="background-color:#aa55dd;width:10px;height:350px;top:150px;left:500px;position:absolute">
+			<img style="background-color:#aa55dd;width:10px;height:350px;top:150px;left:800px;position:absolute">			
+	<script>
+		var colorFlag = 0;
+		var arrayColor = new Array();
+		/*清除盘子*/
+		function clearPanel()
+		{
+		     arrayX.length = 0;
+		     arrayY.length = 0;
+		     arrayZ.length = 0;
+			 var spans = window.document.getElementsByTagName('span');
+			 for(var i = 0;i<spans.length;i++)
+    	     {
+				 document.body.removeChild(spans[i]);
+				 i--;
+			 }	
+		}
+		/*盘子设置*/
+		function createPanel(num)
+		{
+		    var arrayTemp = new Array();
+			clearPanel();
+			xm.clearItem();
+			arrayColor.length=0;
+			for(var i=0;i<num;i++)
+			{				
+				var cs = document.createElement("span");
+				cs.style.width=50+i*20+"px";
+				cs.style.height="30px";
+				colorFlag = Math.random();
+				colorFlag = Math.round(colorFlag*33);
+				var j=0;
+				while(j!=arrayColor.length)
+				{
+					if(arrayColor[j]==colorFlag)
+					{
+					  colorFlag = Math.random();
+					  colorFlag = Math.round(colorFlag*33);
+					  j=0;
+					}
+					else
+					{
+						j++;
+					}
+				}
+				arrayColor[arrayColor.length] = colorFlag;
+				switch(colorFlag)
+				{
+					case 0:cs.style.backgroundColor="#990033";break;
+					case 1:cs.style.backgroundColor="#CC6699";break;
+					case 2:cs.style.backgroundColor="#FF99CC";break;
+					case 3:cs.style.backgroundColor="#CC00FF";break;
+					case 4:cs.style.backgroundColor="#CC99FF";break;
+					case 5:cs.style.backgroundColor="#9900CC";break;
+					case 6:cs.style.backgroundColor="#666FFF";break;
+					case 7:cs.style.backgroundColor="#000CCC";break;
+					case 8:cs.style.backgroundColor="#666699";break;
+					case 9:cs.style.backgroundColor="#006699";break;
+					case 10:cs.style.backgroundColor="#FFFFCC";break;
+					case 11:cs.style.backgroundColor="#CC9909";break;
+					case 12:cs.style.backgroundColor="#663300";break;
+					case 13:cs.style.backgroundColor="#CC6666";break;
+					case 14:cs.style.backgroundColor="#FF3333";break;
+					case 15:cs.style.backgroundColor="#33CCCC";break;
+					case 16:cs.style.backgroundColor="#009966";break;
+					case 17:cs.style.backgroundColor="#006666";break;
+					case 18:cs.style.backgroundColor="#669999";break;
+					case 19:cs.style.backgroundColor="#999966";break;
+					case 20:cs.style.backgroundColor="#009900";break;
+					case 21:cs.style.backgroundColor="#669900";break;
+					case 22:cs.style.backgroundColor="#CCFFFF";break;
+					case 23:cs.style.backgroundColor="#CCFF66";break;
+					case 24:cs.style.backgroundColor="#CCFFCC";break;
+					case 25:cs.style.backgroundColor="#33FFFF";break;
+					case 26:cs.style.backgroundColor="#adda33";break;
+					case 27:cs.style.backgroundColor="#ddea33";break;
+					case 28:cs.style.backgroundColor="#afecc3";break;
+					case 29:cs.style.backgroundColor="#43eacc";break;
+					case 30:cs.style.backgroundColor="#afef13";break;
+					case 31:cs.style.backgroundColor="#afe233";break;
+					case 32:cs.style.backgroundColor="#a43a33";break;
+					case 33:cs.style.backgroundColor="#55ea33";break;					
+				}
+				cs.style.border="1px";
+				cs.style.borderStyle="solid";
+				cs.style.borderColor="black";
+				cs.onmousedown = function(){MDown();};
+				document.body.appendChild(cs);
+				cs.style.position = "absolute";				
+				cs.style.left=180-i*10+"px";
+				cs.id="cssk"+i;
+				cs.title="1";
+				cs.style.top=500-30*num+i*30+"px";
+				arrayTemp[arrayTemp.length]=cs;
+			}
+			return arrayTemp;
+		}
+	</script>
+	</body>
+	
+</html>
